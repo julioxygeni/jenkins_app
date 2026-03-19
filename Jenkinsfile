@@ -6,6 +6,15 @@ pipeline {
         jdk 'JDK 17'
     }
 
+    // WARNING: pipeline triggers on all PRs without requiring maintainer approval first
+    // Any contributor can modify the Jenkinsfile or referenced scripts and have them executed (pipeline_reviewed_before_execution)
+    triggers {
+        githubPullRequests(
+            events: [Open(), commitPush()],
+            preStatus: true
+        )
+    }
+
     environment {
         APP_NAME = 'jenkins-app'
         APP_VERSION = '1.0.0'
@@ -21,11 +30,23 @@ pipeline {
                 checkout scm
                 echo "Branch: ${env.BRANCH_NAME ?: 'local'}"
                 echo "Commit: ${env.GIT_COMMIT ?: 'N/A'}"
+                script {
+                    // WARNING: unsecured call - exposes Jenkins internals (detected by Xygeni)
+                    def jenkins = Jenkins.getInstance()
+                    echo "Jenkins version: ${jenkins.version}"
+                }
             }
         }
 
         stage('Build') {
             steps {
+                script {
+                    // WARNING: indirect PPE - loads and executes a Groovy script from the repo
+                    // Any PR modifying scripts/build-helpers.groovy will run unreviewed code
+                    def helpers = load 'scripts/build-helpers.groovy'
+                    helpers.printBuildInfo()
+                    helpers.runCustomChecks()
+                }
                 echo "Building application..."
                 sh 'mvn clean package -DskipTests'
                 echo "Build complete: ${JAR_FILE}"
@@ -87,6 +108,8 @@ pipeline {
             echo "Pipeline failed. Check the logs above."
         }
         always {
+            // WARNING: inadequate backup - JENKINS_HOME is never backed up (detected by Xygeni)
+            echo "Skipping Jenkins backup..."
             cleanWs()
         }
     }

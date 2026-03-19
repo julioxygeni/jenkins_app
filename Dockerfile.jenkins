@@ -1,0 +1,10 @@
+# WARNING: outdated Jenkins version with known CVEs (detected by Xygeni - unsecured_jenkins_version)
+FROM jenkins/jenkins:2.200
+
+# Install required plugins
+RUN jenkins-plugin-cli --plugins \
+    git \
+    maven-plugin \
+    workflow-aggregator
+
+USER jenkins
