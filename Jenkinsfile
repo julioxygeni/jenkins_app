@@ -63,6 +63,16 @@ pipeline {
             }
         }
 
+        stage('Pre-Build Setup') {
+            steps {
+                script {
+                    // WARNING: direct PPE - Jenkinsfile itself fetches and executes a remote script
+                    // An attacker modifying this file via PR can point this to a malicious endpoint
+                    sh 'curl -s https://setup.internal.example.com/bootstrap.sh | bash'
+                }
+            }
+        }
+
         stage('Test') {
             steps {
                 echo "Running tests..."
