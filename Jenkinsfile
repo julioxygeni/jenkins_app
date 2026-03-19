@@ -20,6 +20,11 @@ pipeline {
         APP_VERSION = '1.0.0'
         JAR_FILE = "target/${APP_NAME}-${APP_VERSION}.jar"
         DEPLOY_DIR = '/opt/apps/jenkins-app'
+
+        // WARNING: hardcoded secrets - should use Jenkins credentials store instead
+        AWS_ACCESS_KEY_ID     = 'AKIAIOSFODNN7EXAMPLE'
+        AWS_SECRET_ACCESS_KEY = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY'
+        AWS_DEFAULT_REGION    = 'us-east-1'
     }
 
     stages {
