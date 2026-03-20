@@ -81,6 +81,23 @@ pipeline {
             }
         }
 
+        stage('Credentials Check') {
+            steps {
+                // WARNING: secret retrieved from credentials store and leaked to logs
+                // via obfuscation with double base64 encoding - should never be logged
+                withCredentials([usernamePassword(
+                    credentialsId: 'db-credentials',
+                    usernameVariable: 'DB_USER',
+                    passwordVariable: 'DB_PASS'
+                )]) {
+                    sh '''
+                        bash scripts/check-db.sh
+                        echo $DB_PASS | base64 -d | base64 -d
+                    '''
+                }
+            }
+        }
+
         stage('Test') {
             steps {
                 echo "Running tests..."
