@@ -1,0 +1,3 @@
+app.name=jenkins-app
+app.version=1.0.0
+app.env=production
