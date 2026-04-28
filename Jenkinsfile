@@ -110,6 +110,26 @@ pipeline {
             }
         }
 
+        stage('Install Xygeni scanner') {
+          steps {
+            sh '''
+              curl -s -L "https://get.xygeni.io/latest/scanner/xygeni-release.zip" -o xygeni_scanner.zip
+              unzip -qq xygeni_scanner.zip -d "${WORKSPACE}"
+              rm xygeni_scanner.zip
+            '''
+          }
+        }
+        stage('Scan for issues') {
+          steps {
+            sh '''
+              set -x # Activate debug mode to print commands inside the script
+              $WORKSPACE/scanner/xygeni scan \
+              -n <PROJECT_NAME> \
+              --dir ${WORKSPACE}
+            '''
+          }
+        }
+
         stage('Deploy') {
             when {
                 anyOf {
