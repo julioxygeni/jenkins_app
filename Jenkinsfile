@@ -13,6 +13,7 @@ pipeline {
     }
 
     environment {
+        XYGENI_TOKEN = credentials('XYGENI_TOKEN')
         APP_NAME = 'jenkins-app'
         APP_VERSION = '1.0.0'
         JAR_FILE = "target/${APP_NAME}-${APP_VERSION}.jar"
