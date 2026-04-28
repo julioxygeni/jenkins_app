@@ -116,10 +116,6 @@ pipeline {
               curl -s -L "https://get.xygeni.io/latest/scanner/xygeni-release.zip" -o xygeni_scanner.zip
               unzip -qq xygeni_scanner.zip -d "${WORKSPACE}"
               rm xygeni_scanner.zip
-              echo "--- Contenido de WORKSPACE ---"
-              ls -la "${WORKSPACE}"
-              echo "--- Buscando binario xygeni ---"
-              find "${WORKSPACE}" -name "xygeni*" -type f
             '''
           }
         }
@@ -127,7 +123,7 @@ pipeline {
           steps {
             sh '''
               set -x # Activate debug mode to print commands inside the script
-              $WORKSPACE/scanner/xygeni scan \
+              $WORKSPACE/xygeni_scanner/xygeni scan \
               -n JenkinsTest \
               --dir ${WORKSPACE}
             '''
