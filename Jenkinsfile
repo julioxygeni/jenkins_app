@@ -124,7 +124,7 @@ pipeline {
             sh '''
               set -x # Activate debug mode to print commands inside the script
               $WORKSPACE/scanner/xygeni scan \
-              -n <PROJECT_NAME> \
+              -n JenkinsTest \
               --dir ${WORKSPACE}
             '''
           }
